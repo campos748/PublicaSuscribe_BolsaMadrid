@@ -10,26 +10,29 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import Cliente.ServerInterface;
+import static java.lang.Thread.sleep;
+import java.util.ArrayList;
+import java.util.TimerTask;
 import java.util.Vector;
+import java.util.Timer;
 
 
 public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
   
-   private Vector clientList;
-    
+   private ArrayList<Alerta> alertas;
+   private HashMap<String,Float> data;
+   
    public ServerImpl() throws RemoteException {
       super( );
-      clientList = new Vector();
-   }
-  
+      alertas = new ArrayList<>();
+      data = new HashMap<>();
+   } 
+   
+   
    @Override
-    public synchronized void registerForCallback(ClientInterface callbackClientObject) throws java.rmi.RemoteException {
-        // store the callback object into the vector
-        if (!(clientList.contains(callbackClientObject))) {
-            clientList.addElement(callbackClientObject);
-            System.out.println("Registered new client ");
-            doCallbacks();
-        } // end if
+    public synchronized void registerForCallback(ClientInterface callbackClientObject,String empresa,Float precio,int tipo) throws java.rmi.RemoteException {
+        Alerta alerta = new Alerta(empresa,precio,tipo,callbackClientObject);
+        this.alertas.add(alerta);
     }
 
 // This remote method allows an object client to 
@@ -38,7 +41,7 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 // the server to uniquely identify the registered client.
    @Override
     public synchronized void unregisterForCallback(ClientInterface callbackClientObject) throws java.rmi.RemoteException {
-        if (clientList.removeElement(callbackClientObject)) {
+        if (alertas.remove(callbackClientObject)) {
             System.out.println("Unregistered client ");
         } else {
             System.out.println("unregister: clientwasn't registered.");
@@ -48,16 +51,32 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
    
     private synchronized void doCallbacks() throws java.rmi.RemoteException {
         // make callback to each registered client
+        System.out.println("Numero alertas antes callbacks: " + alertas.size());
         System.out.println("**************************************\n" + "Callbacks initiated ---");
-        for (int i = 0; i < clientList.size(); i++) {
-            System.out.println("doing " + i + "-th callback\n");
-            // convert the vector object to a callback object
-            ClientInterface nextClient = (ClientInterface) clientList.elementAt(i);
-            // invoke the callback method
-            nextClient.notifyMe("Number of registered clients="+ clientList.size());
+        for (int i = 0; i < alertas.size(); i++) {
+
+            if (alertas.get(i).getTipo() == 0) { // Si es una alerta de compra
+                if (this.data.get(alertas.get(i).getEmpresa()) <= alertas.get(i).getPrecio()) {
+                    ClientInterface nextClient = (ClientInterface) alertas.get(i).getCliente();
+                    // invoke the callback method
+                    nextClient.notifyMe("Number of registered alerts=" + alertas.size());
+                    nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),0);
+                    alertas.remove(i);
+                }
+            } else {                            // Si es una alerta de venta
+                if (this.data.get(alertas.get(i).getEmpresa()) >= alertas.get(i).getPrecio()) {
+                    ClientInterface nextClient = (ClientInterface) alertas.get(i).getCliente();
+                    // invoke the callback method
+                    nextClient.notifyMe("Number of registered alerts=" + alertas.size());
+                    nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),1);
+                    alertas.remove(i);
+                }
+            }
+
         }// end for
-        System.out.println("********************************\n" +  "Server completed callbacks ---");
-  } // doCallbacks
+        System.out.println("********************************\n" + "Server completed callbacks ---");
+        System.out.println("Numero alertas despues callbacks: " + alertas.size());
+    } // doCallbacks
     
     
    
@@ -95,22 +114,26 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 
       return data;                                      //Devuelvo el hashMap
    }
+   
+   
+   public void observar() throws InterruptedException, RemoteException{
+       while(true){
+           
+           sleep(60000);    //Espero 1 min
+           
+           System.out.println("*********** Consulata de la bolsa *************");
+           this.data = this.getData();  //actualizo el hashMap
 
-    @Override
-    public boolean alertaCompra(String empresa, Float precio) throws RemoteException {
-        
-        ObserverAlerta alert = new ObserverAlerta(empresa, precio, 0);
-        alert.start();
-        
-        return true;
-    }
-
-    @Override
-    public boolean alertaVenta(String empresa, Float precio) throws RemoteException {
-        
-        ObserverAlerta alert = new ObserverAlerta(empresa, precio, 1);
-        alert.start();
-        
-        return true;
-    }
+           for (String empresa : this.data.keySet()) {
+               System.out.println(empresa + ": " + this.data.get(empresa));
+           }
+           
+           this.doCallbacks();
+           
+          
+       }
+           
+  }
+   
+    
 } // end class

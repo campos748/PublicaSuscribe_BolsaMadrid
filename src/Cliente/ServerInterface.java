@@ -18,10 +18,13 @@ public interface ServerInterface extends Remote {
     /**
      *
      * @param callbackClientObject
+     * @param empresa
+     * @param precio
+     * @param tipo
      * @throws RemoteException
      */
     
-    public void registerForCallback(ClientInterface callbackClientObject) throws java.rmi.RemoteException;
+    public void registerForCallback(ClientInterface callbackClientObject, String empresa, Float precio, int tipo) throws java.rmi.RemoteException;
 
 // This remote method allows an object client to 
 // cancel its registration for callback
@@ -37,23 +40,7 @@ public interface ServerInterface extends Remote {
  */
    public HashMap<String,Float> getData() throws java.rmi.RemoteException;
 
-    /**
-     *
-     * @param empresa
-     * @param precio
-     * @return
-     * @throws RemoteException
-     */
-    public boolean alertaCompra(String empresa, Float precio) throws java.rmi.RemoteException;
-   
-    /**
-     *
-     * @param empresa
-     * @param precio
-     * @return
-     * @throws RemoteException
-     */
-    public boolean alertaVenta(String empresa, Float precio) throws java.rmi.RemoteException;
+    
 } //end interface
    
    

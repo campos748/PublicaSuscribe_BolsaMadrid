@@ -5,6 +5,7 @@
  */
 package Cliente;
 
+
 import Server.ClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -15,15 +16,28 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class ClientImpl extends UnicastRemoteObject implements ClientInterface{
     
-    public ClientImpl() throws RemoteException {
+    VCliente ventana;
+    
+    /**
+     *
+     * @param ventana
+     * @throws RemoteException
+     */
+    public ClientImpl(VCliente ventana) throws RemoteException {
       super( );
+      this.ventana = ventana;
     }
     
     @Override
-    public String notifyMe(String message){
+    public String notifyMe(String message) throws RemoteException{
       String returnMessage = "Call back received: " + message;
       System.out.println(returnMessage);
       return returnMessage;
-    }   
+    }
+    
+    @Override
+    public void actualizarVentana(String empresa, Float precio, int tipo ) throws RemoteException{
+        this.ventana.anadirAlerta(empresa, precio, tipo);
+    }
     
 }

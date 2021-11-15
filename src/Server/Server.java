@@ -24,8 +24,13 @@ public class Server{
          System.out.println("Server registered.  Registry currently contains:");
          listRegistry(registryURL);
          System.out.println("Server ready.");
+         
+         //Metodo encargado de actualizar los valores de la bolsa de Madrid
+         exportedObj.observar();
+         
       }
       catch (Exception re) {
+         re.printStackTrace();
          System.out.println("Exception in Server.main: " + re);
       }
 
