@@ -51,29 +51,46 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
    
     private synchronized void doCallbacks() throws java.rmi.RemoteException {
         // make callback to each registered client
+        
+        ArrayList<Integer> eliminados = new ArrayList();
+        
         System.out.println("Numero alertas antes callbacks: " + alertas.size());
         System.out.println("**************************************\n" + "Callbacks initiated ---");
-        for (int i = 0; i < alertas.size(); i++) {
-
+        for (int i = 0; i < alertas.size() ; i++) {
+            
+            System.out.println("Alerta a procesar: " + alertas.get(i));
+            
             if (alertas.get(i).getTipo() == 0) { // Si es una alerta de compra
                 if (this.data.get(alertas.get(i).getEmpresa()) <= alertas.get(i).getPrecio()) {
                     ClientInterface nextClient = (ClientInterface) alertas.get(i).getCliente();
                     // invoke the callback method
-                    nextClient.notifyMe("Number of registered alerts=" + alertas.size());
+                    nextClient.notifyMe("Ha saltado una alerta de Compra");
                     nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),0);
-                    alertas.remove(i);
+                    
+                    eliminados.add(i);
+                    
                 }
-            } else {                            // Si es una alerta de venta
+            } 
+            else {                            // Si es una alerta de venta
                 if (this.data.get(alertas.get(i).getEmpresa()) >= alertas.get(i).getPrecio()) {
                     ClientInterface nextClient = (ClientInterface) alertas.get(i).getCliente();
                     // invoke the callback method
-                    nextClient.notifyMe("Number of registered alerts=" + alertas.size());
+                    nextClient.notifyMe("Ha saltado una alerta de Venta");
                     nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),1);
-                    alertas.remove(i);
+                    
+                    eliminados.add(i);
+                    
                 }
             }
 
         }// end for
+        
+        for (int i = 0; i < eliminados.size() ; i++) {
+            alertas.remove(i);
+        }
+            
+        eliminados.clear();
+        
         System.out.println("********************************\n" + "Server completed callbacks ---");
         System.out.println("Numero alertas despues callbacks: " + alertas.size());
     } // doCallbacks
