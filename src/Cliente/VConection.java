@@ -5,6 +5,7 @@
  */
 package Cliente;
 
+import Server.ClientInterface;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.rmi.Naming;
@@ -33,7 +34,7 @@ public class VConection extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        hostName = new javax.swing.JTextField();
+        hostTxt = new javax.swing.JTextField();
         portText = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -42,12 +43,13 @@ public class VConection extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bolsa Madrid");
+        setResizable(false);
 
         jPanel1.setMaximumSize(new java.awt.Dimension(400, 300));
 
-        hostName.addActionListener(new java.awt.event.ActionListener() {
+        hostTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hostNameActionPerformed(evt);
+                hostTxtActionPerformed(evt);
             }
         });
 
@@ -71,7 +73,7 @@ public class VConection extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(54, 54, 54)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(hostName, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(hostTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -99,7 +101,7 @@ public class VConection extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(hostName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(hostTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(portText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addComponent(jButton1)
@@ -122,33 +124,19 @@ public class VConection extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void hostNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hostNameActionPerformed
+    private void hostTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hostTxtActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_hostNameActionPerformed
+    }//GEN-LAST:event_hostTxtActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            int RMIPort;
-            String hostName = this.hostName.getText();
 
-            String portNum = this.portText.getText();
-            RMIPort = Integer.parseInt(portNum);
-            String registryURL = "rmi://" + hostName + ":" + portNum + "/bolsa";
-            // find the remote object and cast it to an interface object
-            Interface h = (Interface) Naming.lookup(registryURL);
-            
-            VCliente client = new VCliente(h);
-            client.setVisible(true);
-            this.setVisible(false);
-        } // end try 
-        catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Exception in Client: " + e);
-            this.errorText.setText(e.getMessage());
-        }
-        
-          
-        
+        String hostName = this.hostTxt.getText();
+        String portNum = this.portText.getText();
+
+        VCliente client = new VCliente(hostName, portNum);
+        client.setVisible(true);
+        this.setVisible(false);
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -181,6 +169,7 @@ public class VConection extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new VConection().setVisible(true);
             }
@@ -189,7 +178,7 @@ public class VConection extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel errorText;
-    private javax.swing.JTextField hostName;
+    private javax.swing.JTextField hostTxt;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

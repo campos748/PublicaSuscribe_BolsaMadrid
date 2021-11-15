@@ -6,6 +6,10 @@
 
 package Cliente;
 
+import Server.ClientInterface;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,15 +22,17 @@ import java.util.logging.Logger;
  */
 public class VCliente extends javax.swing.JFrame {
 
-    Interface h = null;
     HashMap<String,Float> data = null;
-    
+    private final String portNum;
+    private final String hostName;
     
     /** Creates new form VCliente
-     * @param h */
-    public VCliente(Interface h) {
-        this.h = h;
+     * @param hostName
+     * @param portNum */
+    public VCliente(String hostName,String portNum) {
         initComponents();
+        this.hostName = hostName;
+        this.portNum = portNum;
     }
 
     /** This method is called from within the constructor to
@@ -61,6 +67,7 @@ public class VCliente extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bolsa Madrid");
+        setResizable(false);
 
         tablaBolsa.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -126,9 +133,9 @@ public class VCliente extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
+                .addGap(18, 18, 18)
                 .addComponent(btnConsultar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Bolsa", jPanel1);
@@ -167,26 +174,26 @@ public class VCliente extends javax.swing.JFrame {
 
         tablaAlertas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Tipo", "Empresa", "Precio", "Valor Actual", "Activación"
+                "Tipo", "Empresa", "Precio", "Activación"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Float.class, java.lang.Long.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Float.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -203,7 +210,6 @@ public class VCliente extends javax.swing.JFrame {
             tablaAlertas.getColumnModel().getColumn(1).setResizable(false);
             tablaAlertas.getColumnModel().getColumn(2).setResizable(false);
             tablaAlertas.getColumnModel().getColumn(3).setResizable(false);
-            tablaAlertas.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jLabel3.setFont(new java.awt.Font("Dialog", 3, 14)); // NOI18N
@@ -234,17 +240,15 @@ public class VCliente extends javax.swing.JFrame {
                             .addComponent(txtEmpresaCompra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(90, 90, 90)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel5)
-                                .addGap(73, 73, 73))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(73, 73, 73)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel6)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(17, 17, 17)
-                                        .addComponent(jLabel3)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 237, Short.MAX_VALUE)))))))
+                                    .addComponent(jLabel5))
+                                .addGap(73, 73, 73)))))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnVenta)
                     .addComponent(jLabel2)
@@ -252,7 +256,7 @@ public class VCliente extends javax.swing.JFrame {
                     .addComponent(txtPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(35, 35, 35))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(28, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25))
             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -283,11 +287,11 @@ public class VCliente extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCompra)
                     .addComponent(btnVenta))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49))
+                .addGap(61, 61, 61))
         );
 
         jTabbedPane1.addTab("Alertas", jPanel2);
@@ -309,8 +313,13 @@ public class VCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        
+        int RMIPort = Integer.parseInt(this.portNum);
+        String registryURL = "rmi://" + this.hostName + ":" + this.portNum + "/bolsa";
+        // find the remote object and cast it to an interface object
+        ServerInterface h;
         try {
-            // Código para consultar la bolsa y mostrar los datos en la tabla
+            h = (ServerInterface) Naming.lookup(registryURL);
             HashMap<String,Float> data = h.getData();   // HashMap Empresa-Valor obtenido a través de callback
             this.data = data;                           // Guardo el hasmap como atributo
             
@@ -331,13 +340,10 @@ public class VCliente extends javax.swing.JFrame {
             tablaBolsa.setModel(new javax.swing.table.DefaultTableModel(
             matrix,new String [] {"Empresa", "Valor"}
             ));
-            
-              
-        } catch (RemoteException ex) {
-            System.out.println("Error para conectarse a la bolsa");
+        } catch (NotBoundException | MalformedURLException | RemoteException ex) {
+            Logger.getLogger(VCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
+            
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void txtPrecioVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioVentaActionPerformed
@@ -345,7 +351,28 @@ public class VCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioVentaActionPerformed
 
     private void btnCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompraActionPerformed
-        // TODO add your handling code here:
+        // Añadir nueva Alerta para la compra de acciones
+        
+        String nombreEmpresa = this.txtEmpresaCompra.getText();
+        Float precioCompra = Float.valueOf(this.txtPrecioCompra.getText());
+        
+        try {
+            
+            int RMIPort = Integer.parseInt(this.portNum);
+            String registryURL = "rmi://" + this.hostName + ":" + this.portNum + "/bolsa";
+            // find the remote object and cast it to an interface object
+            ServerInterface h = (ServerInterface) Naming.lookup(registryURL);
+
+            ClientInterface callbackObj = new ClientImpl();
+            h.registerForCallback(callbackObj);
+            System.out.println("Registered for callback.");
+            
+        } catch (NumberFormatException | MalformedURLException | NotBoundException | RemoteException e) {
+            System.out.println("Error en Registro para callback \n"+e.getMessage());
+            e.printStackTrace();
+        }
+          
+        
     }//GEN-LAST:event_btnCompraActionPerformed
 
     private void txtPrecioCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioCompraActionPerformed
@@ -353,7 +380,27 @@ public class VCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioCompraActionPerformed
 
     private void btnVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVentaActionPerformed
-        // TODO add your handling code here:
+        // Añadir neuva Alerta para la venta de acciones
+        String nombreEmpresa = this.txtEmpresaCompra.getText();
+        Float precioVenta = Float.valueOf(this.txtPrecioCompra.getText());
+        
+        try {
+            
+            int RMIPort = Integer.parseInt(this.portNum);
+            String registryURL = "rmi://" + this.hostName + ":" + this.portNum + "/bolsa";
+            // find the remote object and cast it to an interface object
+            ServerInterface h = (ServerInterface) Naming.lookup(registryURL);
+
+            ClientInterface callbackObj = new ClientImpl();
+            h.registerForCallback(callbackObj);
+            System.out.println("Registered for callback.");
+            
+        } catch (NumberFormatException | MalformedURLException | NotBoundException | RemoteException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        
+               
     }//GEN-LAST:event_btnVentaActionPerformed
 
     /**
@@ -414,4 +461,9 @@ public class VCliente extends javax.swing.JFrame {
     private javax.swing.JTextField txtPrecioVenta;
     // End of variables declaration//GEN-END:variables
 
+    
+    
+    
+    
+    
 }

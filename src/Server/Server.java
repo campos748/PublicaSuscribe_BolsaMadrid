@@ -18,7 +18,7 @@ public class Server{
          portNum = (br.readLine()).trim();
          int RMIPortNum = Integer.parseInt(portNum);
          startRegistry(RMIPortNum);
-         Impl exportedObj = new Impl();
+         ServerImpl exportedObj = new ServerImpl();
          registryURL = "rmi://localhost:" + portNum + "/bolsa";
          Naming.rebind(registryURL, exportedObj);
          System.out.println("Server registered.  Registry currently contains:");
