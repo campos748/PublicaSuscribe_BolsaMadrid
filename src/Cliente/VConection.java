@@ -57,7 +57,7 @@ public class VConection extends javax.swing.JFrame {
 
         jLabel2.setText("Port");
 
-        jButton1.setText("Conect");
+        jButton1.setText("Enter");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);

@@ -4,12 +4,13 @@
  * and open the template in the editor.
  */
 package Server;
+import java.io.Serializable;
 
 /**
  *
  * @author martin
  */
-public class Alerta {
+public class Alerta implements Serializable{
     private String empresa;
     private Float precio;
     private int tipo;

@@ -31,8 +31,12 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
    
    @Override
     public synchronized void registerForCallback(ClientInterface callbackClientObject,String empresa,Float precio,int tipo) throws java.rmi.RemoteException {
+        
         Alerta alerta = new Alerta(empresa,precio,tipo,callbackClientObject);
-        this.alertas.add(alerta);
+        if(!this.alertas.contains(alerta)){
+            this.alertas.add(alerta);
+        }
+        
     }
 
 // This remote method allows an object client to 
@@ -42,42 +46,70 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
    @Override
     public synchronized void unregisterForCallback(ClientInterface callbackClientObject) throws java.rmi.RemoteException {
         System.out.println("Funcion de desrregistro");
-        for (int i = 0; i < alertas.size(); i++) {
-           if(alertas.get(i).getCliente()== callbackClientObject){
+        
+        ArrayList<Alerta> eliminar = new ArrayList<>();
+        
+        for (Alerta alerta : this.alertas) {
+           if(alerta.getCliente().equals(callbackClientObject)){
                
-               alertas.remove(i);
+               eliminar.add(alerta);
                System.out.println("Unregistered client ");
            }
-       }
+        }
+        
+        for(Alerta eliminado : eliminar){
+            this.alertas.remove(eliminado);
+        }
     }
    
+    public synchronized void unregisterAvisos(Alerta alerta) throws java.rmi.RemoteException {
+        if(this.alertas.contains(alerta)){
+            this.alertas.remove(alerta);
+        }
+        
+    }
    
     private synchronized void doCallbacks() throws java.rmi.RemoteException {
         // make callback to each registered client
         
+        ArrayList<Alerta> eliminar = new ArrayList<>();
+        
         System.out.println("Numero alertas antes callbacks: " + alertas.size());
         System.out.println("**************************************\n" + "Callbacks initiated ---");
-        for (int i = 0; i < alertas.size() ; i++) {
+        for (Alerta alerta : this.alertas) {
             
             
-            if (alertas.get(i).getTipo() == 0) { // Si es una alerta de compra
-                if (this.data.get(alertas.get(i).getEmpresa()) <= alertas.get(i).getPrecio()) {
-                    ClientInterface nextClient = (ClientInterface) alertas.get(i).getCliente();
+            if (alerta.getTipo() == 0) { // Si es una alerta de compra
+                if (this.data.get(alerta.getEmpresa()) <= alerta.getPrecio()) {
+                    ClientInterface nextClient = (ClientInterface) alerta.getCliente();
                     // invoke the callback method
                     nextClient.notifyMe("Ha saltado una alerta de Compra");
-                    nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),0);                                        
+                    nextClient.actualizarVentana(alerta);
+                    
+                    eliminar.add(alerta);
+                    
                 }
             } 
             else {                            // Si es una alerta de venta
-                if (this.data.get(alertas.get(i).getEmpresa()) >= alertas.get(i).getPrecio()) {
-                    ClientInterface nextClient = (ClientInterface) alertas.get(i).getCliente();
+                if (this.data.get(alerta.getEmpresa()) >= alerta.getPrecio()) {
+                    ClientInterface nextClient = (ClientInterface) alerta.getCliente();
                     // invoke the callback method
                     nextClient.notifyMe("Ha saltado una alerta de Venta");
-                    nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),1);    
+                    nextClient.actualizarVentana(alerta);    
+                    
+                    eliminar.add(alerta);
+                    
                 }
             }
 
         }// end for
+        
+        for(Alerta elimina : eliminar){
+            this.unregisterAvisos(elimina);
+        }
+        
+        
+        
         
         System.out.println("********************************\n" + "Server completed callbacks ---");
     } // doCallbacks

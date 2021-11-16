@@ -6,6 +6,7 @@
 package Cliente;
 
 
+import Server.Alerta;
 import Server.ClientInterface;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -36,8 +37,8 @@ public class ClientImpl extends UnicastRemoteObject implements ClientInterface{
     }
     
     @Override
-    public void actualizarVentana(String empresa, Float precio, int tipo) throws RemoteException{
-        this.ventana.anadirAlerta(empresa, precio, tipo, (ClientInterface)this);
+    public void actualizarVentana(Alerta alerta) throws RemoteException{
+        this.ventana.anadirAlerta(alerta);
     }
     
 }
