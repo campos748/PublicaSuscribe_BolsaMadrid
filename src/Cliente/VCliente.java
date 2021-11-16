@@ -446,11 +446,15 @@ public class VCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void cerrarVentana(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_cerrarVentana
-        try {
-            this.h.unregisterForCallback(this.ch);
-        } catch (RemoteException ex) {
-            Logger.getLogger(VCliente.class.getName()).log(Level.SEVERE, null, ex);
+        
+        if(this.ch != null){
+            try {
+                this.h.unregisterForCallback(this.ch);
+            } catch (RemoteException ex) {
+                Logger.getLogger(VCliente.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        
         System.exit(0);
     }//GEN-LAST:event_cerrarVentana
 
