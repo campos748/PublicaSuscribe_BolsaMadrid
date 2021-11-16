@@ -36,8 +36,8 @@ public class ClientImpl extends UnicastRemoteObject implements ClientInterface{
     }
     
     @Override
-    public void actualizarVentana(String empresa, Float precio, int tipo ) throws RemoteException{
-        this.ventana.anadirAlerta(empresa, precio, tipo);
+    public void actualizarVentana(String empresa, Float precio, int tipo) throws RemoteException{
+        this.ventana.anadirAlerta(empresa, precio, tipo, (ClientInterface)this);
     }
     
 }

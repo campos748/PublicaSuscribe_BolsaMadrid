@@ -29,15 +29,18 @@ public class VCliente extends javax.swing.JFrame {
     HashMap<String,Float> data = null;
     private final String portNum;
     private final String hostName;
+    private ServerInterface h;
     
     /** Creates new form VCliente
      * @param hostName
      * @param portNum */
     public VCliente(String hostName,String portNum) {
         initComponents();
-        this.anadirAlerta.setVisible(false);
+        //this.anadirAlerta.setVisible(false);
         this.hostName = hostName;
         this.portNum = portNum;
+        this.anadirAlerta.setVisible(false);
+        this.h = null;
     }
 
     /** This method is called from within the constructor to
@@ -61,8 +64,6 @@ public class VCliente extends javax.swing.JFrame {
         txtPrecioVenta = new javax.swing.JTextField();
         btnCompra = new javax.swing.JButton();
         btnVenta = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tablaAlertas = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtEmpresaCompra = new javax.swing.JComboBox<>();
@@ -71,6 +72,8 @@ public class VCliente extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         btnLimpiar = new javax.swing.JButton();
         anadirAlerta = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        textoAlertas = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bolsa Madrid");
@@ -177,40 +180,6 @@ public class VCliente extends javax.swing.JFrame {
             }
         });
 
-        tablaAlertas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Tipo", "Empresa", "Precio"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Float.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(tablaAlertas);
-        if (tablaAlertas.getColumnModel().getColumnCount() > 0) {
-            tablaAlertas.getColumnModel().getColumn(0).setResizable(false);
-            tablaAlertas.getColumnModel().getColumn(1).setResizable(false);
-            tablaAlertas.getColumnModel().getColumn(2).setResizable(false);
-        }
-
         jLabel3.setFont(new java.awt.Font("Dialog", 3, 14)); // NOI18N
         jLabel3.setText("Añadir");
 
@@ -240,45 +209,19 @@ public class VCliente extends javax.swing.JFrame {
         anadirAlerta.setForeground(new java.awt.Color(255, 0, 0));
         anadirAlerta.setText("ALERTA AÑADIDA!");
 
+        textoAlertas.setColumns(20);
+        textoAlertas.setRows(5);
+        jScrollPane3.setViewportView(textoAlertas);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnCompra)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                    .addComponent(txtPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel8))
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtEmpresaVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2)))
-                            .addComponent(btnVenta))
-                        .addGap(19, 19, 19))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtEmpresaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(txtPrecioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel7)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
+                .addContainerGap(193, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnLimpiar)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnLimpiar)
                         .addGap(25, 25, 25))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -291,6 +234,40 @@ public class VCliente extends javax.swing.JFrame {
                 .addGap(232, 232, 232)
                 .addComponent(jLabel3)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(btnCompra)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                            .addComponent(txtPrecioVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jLabel8))
+                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtEmpresaVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel2)))
+                                    .addComponent(btnVenta)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)))
+                        .addGap(19, 19, 19))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtEmpresaCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(txtPrecioCompra, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel7)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -320,7 +297,7 @@ public class VCliente extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnLimpiar)
                 .addContainerGap(29, Short.MAX_VALUE))
@@ -390,25 +367,24 @@ public class VCliente extends javax.swing.JFrame {
         System.out.println(nombreEmpresa+" : "+precioVenta);
         
         try {
-
-            int RMIPort = Integer.parseInt(this.portNum);
-            String registryURL = "rmi://" + this.hostName + ":" + this.portNum + "/bolsa";
-            // find the remote object and cast it to an interface object
-            ServerInterface h = (ServerInterface) Naming.lookup(registryURL);
-
-            ClientInterface callbackObj = new ClientImpl(this);
-            h.registerForCallback(callbackObj,nombreEmpresa, precioVenta,1);
-            System.out.println("Registered for callback.");
+            if (this.h == null) {
+                int RMIPort = Integer.parseInt(this.portNum);
+                String registryURL = "rmi://" + this.hostName + ":" + this.portNum + "/bolsa";
+                // find the remote object and cast it to an interface object
+                ServerInterface h = (ServerInterface) Naming.lookup(registryURL);
+                this.h = h;
+            }
             
+            ClientInterface callbackObj = new ClientImpl(this);
+            this.h.registerForCallback(callbackObj, nombreEmpresa, precioVenta, 1);
+            System.out.println("Registered for callback.");
+
             this.anadirAlerta.setVisible(true);
-            sleep(1000);
-            this.anadirAlerta.setVisible(false);
+            
             
         } catch (NumberFormatException | MalformedURLException | NotBoundException | RemoteException e) {
             System.out.println(e.getMessage());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(VCliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
 
     }//GEN-LAST:event_btnVentaActionPerformed
 
@@ -420,26 +396,25 @@ public class VCliente extends javax.swing.JFrame {
 
         System.out.println(nombreEmpresa+" : "+precioCompra);
         try {
-
-            int RMIPort = Integer.parseInt(this.portNum);
-            String registryURL = "rmi://" + this.hostName + ":" + this.portNum + "/bolsa";
-            // find the remote object and cast it to an interface object
-            ServerInterface h = (ServerInterface) Naming.lookup(registryURL);
-
+            
+            if (this.h == null) {
+                int RMIPort = Integer.parseInt(this.portNum);
+                String registryURL = "rmi://" + this.hostName + ":" + this.portNum + "/bolsa";
+                // find the remote object and cast it to an interface object
+                ServerInterface h = (ServerInterface) Naming.lookup(registryURL);
+                this.h = h;
+            }
             ClientInterface callbackObj = new ClientImpl(this);
-            h.registerForCallback(callbackObj,nombreEmpresa, precioCompra,0);
+            this.h.registerForCallback(callbackObj,nombreEmpresa, precioCompra,0);
             System.out.println("Registered for callback.");
             
             this.anadirAlerta.setVisible(true);
-            sleep(1000);
-            this.anadirAlerta.setVisible(false);
+            
 
             
         } catch (NumberFormatException | MalformedURLException | NotBoundException | RemoteException e) {
             System.out.println("Error en Registro para callback \n"+e.getMessage());
             e.printStackTrace();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(VCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }//GEN-LAST:event_btnCompraActionPerformed
@@ -453,7 +428,11 @@ public class VCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPrecioCompraActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        // TODO add your handling code here:
+        // 
+        this.anadirAlerta.setVisible(false);
+        this.textoAlertas.selectAll();
+        this.textoAlertas.replaceSelection("");
+        
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     /**
@@ -507,10 +486,10 @@ public class VCliente extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable tablaAlertas;
     private javax.swing.JTable tablaBolsa;
+    private javax.swing.JTextArea textoAlertas;
     private javax.swing.JComboBox<String> txtEmpresaCompra;
     private javax.swing.JComboBox<String> txtEmpresaVenta;
     private javax.swing.JTextField txtPrecioCompra;
@@ -518,7 +497,7 @@ public class VCliente extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     
-    public void anadirAlerta(String empresa, Float precio, int tipo){
+    public void anadirAlerta(String empresa, Float precio, int tipo, ClientInterface callbackObj) throws RemoteException{
         String tip;
         
         if(tipo==0){
@@ -530,7 +509,9 @@ public class VCliente extends javax.swing.JFrame {
                 
         System.out.println("Ha saltado la alarma de "+tip+" de la empresa "+empresa+" de precio "+precio);
         
+        this.h.unregisterForCallback(callbackObj);
         
+        this.textoAlertas.insert("Tipo: "+tip+", empresa: "+empresa+", precio: "+precio+"\n",0);
         
         
     }

@@ -41,34 +41,31 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
 // the server to uniquely identify the registered client.
    @Override
     public synchronized void unregisterForCallback(ClientInterface callbackClientObject) throws java.rmi.RemoteException {
-        if (alertas.remove(callbackClientObject)) {
-            System.out.println("Unregistered client ");
-        } else {
-            System.out.println("unregister: clientwasn't registered.");
-        }
+        System.out.println("Funcion de desrregistro");
+        for (int i = 0; i < alertas.size(); i++) {
+           if(alertas.get(i).getCliente()== callbackClientObject){
+               
+               alertas.remove(i);
+               System.out.println("Unregistered client ");
+           }
+       }
     }
    
    
     private synchronized void doCallbacks() throws java.rmi.RemoteException {
         // make callback to each registered client
         
-        ArrayList<Integer> eliminados = new ArrayList();
-        
         System.out.println("Numero alertas antes callbacks: " + alertas.size());
         System.out.println("**************************************\n" + "Callbacks initiated ---");
         for (int i = 0; i < alertas.size() ; i++) {
             
-            System.out.println("Alerta a procesar: " + alertas.get(i));
             
             if (alertas.get(i).getTipo() == 0) { // Si es una alerta de compra
                 if (this.data.get(alertas.get(i).getEmpresa()) <= alertas.get(i).getPrecio()) {
                     ClientInterface nextClient = (ClientInterface) alertas.get(i).getCliente();
                     // invoke the callback method
                     nextClient.notifyMe("Ha saltado una alerta de Compra");
-                    nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),0);
-                    
-                    eliminados.add(i);
-                    
+                    nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),0);                                        
                 }
             } 
             else {                            // Si es una alerta de venta
@@ -76,23 +73,13 @@ public class ServerImpl extends UnicastRemoteObject implements ServerInterface {
                     ClientInterface nextClient = (ClientInterface) alertas.get(i).getCliente();
                     // invoke the callback method
                     nextClient.notifyMe("Ha saltado una alerta de Venta");
-                    nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),1);
-                    
-                    eliminados.add(i);
-                    
+                    nextClient.actualizarVentana(alertas.get(i).getEmpresa(),alertas.get(i).getPrecio(),1);    
                 }
             }
 
         }// end for
         
-        for (int i = 0; i < eliminados.size() ; i++) {
-            alertas.remove(i);
-        }
-            
-        eliminados.clear();
-        
         System.out.println("********************************\n" + "Server completed callbacks ---");
-        System.out.println("Numero alertas despues callbacks: " + alertas.size());
     } // doCallbacks
     
     

@@ -5,6 +5,7 @@
  */
 package Server;
 
+
 import java.rmi.RemoteException;
 
 /**
@@ -15,5 +16,5 @@ public interface ClientInterface extends java.rmi.Remote{
     
     public String notifyMe(String message) throws java.rmi.RemoteException;
     
-    public void actualizarVentana(String empresa, Float precio, int tipo)throws RemoteException;
+    public void actualizarVentana(String empresa, Float precio, int tipo)throws java.rmi.RemoteException;
 }
